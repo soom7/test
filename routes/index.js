@@ -10,4 +10,10 @@ router.get('/review', function(req, res, next) {
   res.render('review', { title: 'Express' });
 });
 
+router.get('/join', function(req, res, next) {
+  res.render('join', { title: 'Express' });
+});
+
+
 module.exports = router;
+
