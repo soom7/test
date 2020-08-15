@@ -3,23 +3,28 @@ const router = express.Router();
 
 const pool = require('../utils/mysql')
 
-connection.connect();
 
 router.get('/', function(req,res){
     res.sendFile(path.join(__dirname, '../join.html'))
 })
 
-router.post('/', function(req,res){
-    var body = req.body;
-    var email = body.email;
-    var name = body.name;
-    var passwd = body.password;
+router.post('/', async (req, res) => {
+   try { const body = req.body;
+    const email = body.email;
+    const name = body.name;
+    const passwd = body.password;
+    
+    const connection = await pool.getConnection()
+    const [results] = await connection.query('INSERT INTO users (email, name, password) values (?, ?, ?)', [email, name, passwd]);
+  
+    console.log(results);
 
-    var query = connection.query('INSERT INTO users (email, name, password) values ("' + email + '","' + name + '","' + passwd + '")', function(err, rows) {
-        if(err) { throw err;}
-        console.log("Data inserted!");
-    })
-})
+    res.json({stastus:200, msg:'성공!'});
+   } catch (err){
+    console.log(err)
+    res.json({status:500, msg:'에러!'})
+   }
+  })
 
 
 
